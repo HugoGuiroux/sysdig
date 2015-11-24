@@ -433,6 +433,14 @@ along with sysdig.  If not, see <http://www.gnu.org/licenses/>.
 #define PPM_SETVAL		(1 << 12)
 
 /*
+ * Access flags
+ */
+#define PPM_F_OK            (0)
+#define PPM_X_OK            (1 << 0)
+#define PPM_W_OK            (1 << 1)
+#define PPM_R_OK            (1 << 2)
+
+/*
  * SuS says limits have to be unsigned.
  * Which makes a ton more sense anyway.
  *
@@ -735,7 +743,9 @@ enum ppm_event_type {
 	PPME_SYSCALL_MOUNT_X = 257,
 	PPME_SYSCALL_UMOUNT_E = 258,
 	PPME_SYSCALL_UMOUNT_X = 259,
-	PPM_EVENT_MAX = 260
+	PPME_SYSCALL_ACCESS_E = 260,
+	PPME_SYSCALL_ACCESS_X = 261,
+	PPM_EVENT_MAX = 262
 };
 /*@}*/
 
@@ -1276,6 +1286,7 @@ extern const struct ppm_name_value quotactl_dqi_flags[];
 extern const struct ppm_name_value quotactl_quota_fmts[];
 extern const struct ppm_name_value semop_flags[];
 extern const struct ppm_name_value semctl_commands[];
+extern const struct ppm_name_value access_flags[];
 
 
 extern const struct ppm_param_info ptrace_dynamic_param[];
