@@ -1,0 +1,20 @@
+#!/bin/bash
+# A syscall not defined is a syscall where your kernel exports a number but it
+# is not inside g_syscall_code_routing_table of driver/syscall_table.c
+
+base_dir=$(dirname $0)/../
+
+# Find the kernel headers path
+nr_defines=/lib/modules/$(uname -r)/build/arch/x86/include/generated/uapi/asm/unistd_64.h
+
+if [ ! -f $nr_defines ]; then
+	echo "Unable to find the unistd_64.h file, looking inside $nr_defines"
+	echo "Did you have the kernel headers installed?"
+	exit -1
+fi
+
+all_syscalls=$(grep define $nr_defines | awk '{ print $2 }' | grep NR)
+sysdig_syscalls=$(grep SYSCALL_TABLE_ID0 $base_dir/driver/syscall_table.c | grep PPM_ | egrep -v "^/\*" | awk '{ print $1 }' | tr -d "[" | grep -v ia32)
+
+comm -2 -3 <(echo "${all_syscalls[@]}" | sort) <(echo "${sysdig_syscalls[@]}" | sort)
+
